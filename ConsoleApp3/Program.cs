@@ -28,10 +28,19 @@ L’agenzia deve poter eseguire delle ricerche specificando una chiave. Per le r
 
             //
             var app = new Appartamento("cagliari", "via col vento", "09090", 34, 4, 2);
-            var box = new Box("olbia", "via degli olmi", "09010", 56, 12);
+            var box = new Box("olbia", "via cagliari", "09010", 56, 12);
+            var app1 = new Appartamento("sinnai", "via col venticello", "09090", 50, 4, 2);
             var agenzia = new Agenzia();
             agenzia.Immobili.Add(app);
             agenzia.Immobili.Add(box);
+            agenzia.Immobili.Add(app1);
+            Console.WriteLine("inserisci la chiave");
+            var key = Console.ReadLine();
+            var immobiliTrovati = agenzia.SearcByKey(key);
+            foreach (var item in immobiliTrovati)
+            {
+                item.PrintDescription();
+            }
 
             Console.ReadLine();
         }
@@ -39,9 +48,14 @@ L’agenzia deve poter eseguire delle ricerche specificando una chiave. Per le r
     public class Agenzia
     {
         public List<Immobile> Immobili { get; set; } = new List<Immobile>();
-        public Immobile SearcByKey(string value)
+        public List<Immobile> SearcByKey(string value)
         {
+            return Immobili.Where(a => a.ContainsKey(value)).ToList();
+        }
 
+        public List<Immobile> SearchByCittà(string città)
+        {
+            return Immobili.Where(x => x.Città.Contains(città)).ToList();
         }
 
     }
@@ -70,6 +84,14 @@ L’agenzia deve poter eseguire delle ricerche specificando una chiave. Per le r
             Console.WriteLine($"Metri quadri superificie: {Superficie}");
         }
 
+        public virtual bool ContainsKey(string value)
+        {
+            if (Città.Contains(value)) return true;
+            if (Indirizzo.Contains(value)) return true;
+            if (Cap.Contains(value)) return true;
+            if (Superficie.ToString().Contains(value)) return true;
+            return false;
+        }
 
     }
 
@@ -88,6 +110,12 @@ L’agenzia deve poter eseguire delle ricerche specificando una chiave. Per le r
             Console.WriteLine($"Numero posti auto: {PostiAuto}");
         }
 
+        public override bool ContainsKey(string value)
+        {
+            if(base.ContainsKey(value)) return true;
+            if (PostiAuto.ToString().Contains(value)) return true;
+            return false;
+        }
     }
 
     public class Appartamento : Immobile
@@ -108,6 +136,14 @@ L’agenzia deve poter eseguire delle ricerche specificando una chiave. Per le r
             base.PrintDescription();
             Console.WriteLine($"Numero vani: {Vani}");
             Console.WriteLine($"Numero Bagni: {Bagni}");
+        }
+
+        public override bool ContainsKey(string value)
+        {
+            if (base.ContainsKey(value)) return true;
+            if (Vani.ToString().Contains(value)) return true;
+            if (Bagni.ToString().Contains(value)) return true;
+            return false;
         }
     }
 
